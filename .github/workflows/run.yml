@@ -1,0 +1,47 @@
+name: Create Release
+
+on:
+  push:
+    tags:
+      - v[0-9]+.[0-9]+.[0-9]+
+
+jobs:
+  create-changelog:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout locally
+        uses: actions/checkout@v2
+        if: ${{ env.ACT }}
+        with:
+          path: "tag-changelog"
+      - name: Checkout GitHub
+        uses: actions/checkout@v2
+        if: ${{ !env.ACT }}
+
+      - name: Create latest tag
+        uses: EndBug/latest-tag@v1
+        if: ${{ !env.ACT }}
+
+      - name: Create major tag
+        uses: nowactions/update-majorver@v1
+        if: ${{ !env.ACT }}
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create changelog
+        id: changelog
+        uses: ./
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          exclude_types: other,doc,chore,build
+
+      - name: Create release
+        uses: actions/create-release@latest
+        if: ${{ !env.ACT }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body: ${{ steps.changelog.outputs.changes }}

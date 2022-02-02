@@ -1,0 +1,25 @@
+name: Tag Changelog
+description: Automatically generate a changelog since the last tag, using the conventional commit format
+author: endaft
+branding:
+  icon: tag
+  color: blue
+
+inputs:
+  token:
+    description: Github repository token
+    required: true
+  exclude_types:
+    description: 'Which commit types to exclude from the changelog, comma separated string (example: "other,chore")'
+    required: false
+  config_file:
+    description: Location of the config JSON file
+    required: false
+outputs:
+  changelog:
+    description: Generated changelog for the latest tag
+  changes:
+    description: Generated changelog for the latest tag, without the version/date header
+runs:
+  using: node12
+  main: "dist/index.js"
