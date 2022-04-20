@@ -9459,17 +9459,17 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.DEFAULT_CONFIG = void 0;
 exports.DEFAULT_CONFIG = {
     types: [
-        { types: ['feat', 'feature'], label: 'New Features' },
-        { types: ['fix', 'bugfix'], label: 'Bugfixes' },
-        { types: ['improvements', 'enhancement'], label: 'Improvements' },
-        { types: ['perf'], label: 'Performance Improvements' },
-        { types: ['build', 'ci'], label: 'Build System' },
-        { types: ['refactor'], label: 'Refactors' },
-        { types: ['doc', 'docs'], label: 'Documentation Changes' },
-        { types: ['test', 'tests'], label: 'Tests' },
-        { types: ['style'], label: 'Code Style Changes' },
-        { types: ['chore'], label: 'Chores' },
-        { types: ['other'], label: 'Other Changes' },
+        { label: '🎉 New Features', types: ['feat', 'feature'] },
+        { label: '🐛 Bugfixes', types: ['fix', 'bugfix', 'bug'] },
+        { label: '🔨 Improvements', types: ['improvements', 'enhancement', 'impro', 'enhance'] },
+        { label: '🚀 Performance Improvements', types: ['perf'] },
+        { label: '📚 Documentation Changes', types: ['doc', 'docs'] },
+        { label: '🧪 Quality', types: ['test', 'tests', 'quality'] },
+        { label: '🧱 Build System', types: ['build', 'ci', 'cd', 'workflow', 'cicd'] },
+        { label: '🪚 Refactors', types: ['refactor', 'refac', 'refact', 'ref'] },
+        { label: '💅 Code Style Changes', types: ['style', 'format'] },
+        { label: '🧹 Chores', types: ['chore'] },
+        { label: '🤔 Other Changes', types: ['other'] },
     ],
     excludeTypes: [],
     renderTypeSection: (label, commits) => {
@@ -9480,9 +9480,11 @@ exports.DEFAULT_CONFIG = {
             .join('\n')}\n`;
     },
     renderNotes: (notes) => {
-        return `\n## BREAKING CHANGES\n${notes.map((n) => {
+        return `\n## BREAKING CHANGES\n${notes
+            .map((n) => {
             return `- due to [${n.commit.sha.substring(0, 6)}](${n.commit.url}): ${n.commit.subject}\n\n${n.text}\n\n`;
-        }).join('')}`;
+        })
+            .join('')}`;
     },
     renderChangelog: (release, changes) => {
         return `# ${release} - ${new Date().toISOString().substring(0, 10)}\n\n` + changes + '\n\n';
@@ -9555,10 +9557,10 @@ function groupByType(commits, typeConfig) {
     // We end up with a dictionary where the key is the type, and the values is an array of commits.
     const byType = {};
     commits.forEach((commit) => {
-        if (!byType[commit.type]) {
-            byType[commit.type] = [];
-        }
-        byType[commit.type].push(commit);
+        const entry = typeConfig.find(map => map.types.includes(commit.type));
+        const commonType = entry?.types.at(0) ?? commit.type;
+        byType[commonType] = byType[commonType] ?? [];
+        byType[commonType].push(commit);
     });
     // Turn that dictionary into an array of objects,
     // where the key is the type, and the values is an array of commits.

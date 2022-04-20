@@ -3,10 +3,10 @@ export function groupByType(commits: ChangelogCommit[], typeConfig: ChangelogLab
   // We end up with a dictionary where the key is the type, and the values is an array of commits.
   const byType: { [key: string]: ChangelogCommit[] } = {};
   commits.forEach((commit) => {
-    if (!byType[commit.type]) {
-      byType[commit.type] = [];
-    }
-    byType[commit.type].push(commit);
+    const entry = typeConfig.find(map => map.types.includes(commit.type))
+    const commonType = entry?.types.at(0) ?? commit.type;
+    byType[commonType] = byType[commonType] ?? [];
+    byType[commonType].push(commit);
   });
 
   // Turn that dictionary into an array of objects,

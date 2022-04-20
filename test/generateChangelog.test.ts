@@ -12,22 +12,22 @@ describe('Test generateChangelog', () => {
       { subject: 'Subject 5', type: 'feat', notes: [] },
       { subject: 'Subject 6', type: 'other', notes: [] },
     ];
-    const expectedChanges = `## New Features
+    const expectedChanges = `## 🎉 New Features
 - Subject 2
 - Subject 3
 - Subject 5
 
-## Bugfixes
+## 🐛 Bugfixes
 - Subject 1
 - Subject 4`;
     const expectedChangelog = `# 0.0.1 - ${dateString}
 
-## New Features
+## 🎉 New Features
 - Subject 2
 - Subject 3
 - Subject 5
 
-## Bugfixes
+## 🐛 Bugfixes
 - Subject 1
 - Subject 4
 
@@ -56,10 +56,10 @@ describe('Test generateChangelog', () => {
         url: 'https://github.com/loopwerk/tag-changelog/commit/bcb8767bc22bc7d4ab47a4fffd4ef435de581054',
       },
     ];
-    const expectedChanges = `## New Features
+    const expectedChanges = `## 🎉 New Features
 - Feature
 
-## Bugfixes
+## 🐛 Bugfixes
 - Fix
 
 ## BREAKING CHANGES
@@ -82,11 +82,11 @@ This is a breaking change!`;
       { subject: 'Subject 3', type: 'feat', notes: [] },
       { subject: 'Subject 4', type: 'fix', notes: [] },
     ];
-    const expectedChanges = `## New Features
+    const expectedChanges = `## 🎉 New Features
 - **scope:** Subject 2
 - Subject 3
 
-## Bugfixes
+## 🐛 Bugfixes
 - **scope:** Subject 1
 - Subject 4`;
     const result = generateChangelog('0.0.1', commitObjects, DEFAULT_CONFIG);

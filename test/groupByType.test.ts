@@ -3,16 +3,18 @@ import { DEFAULT_CONFIG } from '../src/defaultConfig';
 
 describe('Test groupByType', () => {
   it('Groups And Sorts Commits By Type', () => {
-    const commits = [
+    const commits: ChangelogCommit[] = [
       { subject: 'Subject 0', type: 'other', notes: [] },
       { subject: 'Subject 1', type: 'feat', notes: [] },
       { subject: 'Subject 2', type: 'nonexisting', notes: [] },
       { subject: 'Subject 3', type: 'feat', notes: [] },
       { subject: 'Subject 4', type: 'fix', notes: [] },
       { subject: 'Subject 5', type: 'fix', notes: [] },
+      { subject: 'updates workflow', type: 'build', notes: [] },
+      { subject: 'resets version', type: 'cd', notes: [], scope: 'version' },
     ];
 
-    const expected = [
+    const expected: ChangelogCommitGroup[] = [
       {
         type: 'feat',
         commits: [
@@ -25,6 +27,13 @@ describe('Test groupByType', () => {
         commits: [
           { subject: 'Subject 4', type: 'fix', notes: [] },
           { subject: 'Subject 5', type: 'fix', notes: [] },
+        ],
+      },
+      {
+        type: 'build',
+        commits: [
+          { subject: 'updates workflow', type: 'build', notes: [] },
+          { subject: 'resets version', type: 'cd', scope: 'version', notes: [] },
         ],
       },
       {
