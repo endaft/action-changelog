@@ -24,7 +24,7 @@ jobs:
 
       - name: Create changelog text
         id: changelog
-        uses: endaft/action-changelog@v1
+        uses: endaft/action-changelog@v0.0.3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           exclude_types: other,doc,chore
@@ -58,7 +58,7 @@ jobs:
 
 ```yml
 - name: Create changelog text
-  uses: endaft/action-changelog@v1
+  uses: endaft/action-changelog@v0.0.3
   with:
     token: ${{ secrets.GITHUB_TOKEN }}
     config_file: .github/changelog-config.js
