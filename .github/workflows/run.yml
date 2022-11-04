@@ -11,12 +11,13 @@ jobs:
 
     steps:
       - name: Checkout locally
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         if: ${{ env.ACT }}
         with:
           path: "tag-changelog"
+
       - name: Checkout GitHub
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         if: ${{ !env.ACT }}
 
       - name: Create latest tag
