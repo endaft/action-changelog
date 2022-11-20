@@ -94,6 +94,7 @@ export async function handleAction(): Promise<void> {
 
   // And generate the changelog
   if (commitObjects.length === 0) {
+    core.info(`No changes between '${validSortedTags[0].name}' and '${validSortedTags[1].name}'. Outputs will be empty.`);
     core.setOutput('changelog', '');
     core.setOutput('changes', '');
     return;
