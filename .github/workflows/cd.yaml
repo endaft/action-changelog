@@ -35,9 +35,16 @@ jobs:
         run: yarn test
 
       - name: 🧱 Build
-        run: yarn build
+        run: |
+          yarn build
+          if [ "$(git status --porcelain)" != "" ]; then
+            echo "GIT_IS_DIRTY=true" >> $GITHUB_ENV
+          else
+            echo "GIT_IS_DIRTY=false" >> $GITHUB_ENV
+          fi
 
       - name: 🏷️ Tag
+        if: env.GIT_IS_DIRTY == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -52,6 +59,7 @@ jobs:
           git tag latest -m "The latest version"
 
       - name: 📌 Commit & Push
+        if: env.GIT_IS_DIRTY == 'true'
         uses: GuillaumeFalourd/git-commit-push@v1.3
         with:
           tags: true
