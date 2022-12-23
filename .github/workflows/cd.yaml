@@ -38,6 +38,8 @@ jobs:
         run: yarn build
 
       - name: 🏷️ Tag
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           LATEST_TAG=$(gh api repos/endaft/$(basename $PWD)/releases/latest --jq=.tag_name)
           IFS=. read -r v1 v2 v3 <<< "${LATEST_TAG}"    # split into (integer) components
