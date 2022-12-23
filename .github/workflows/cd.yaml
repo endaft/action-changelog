@@ -47,12 +47,12 @@ jobs:
           LATEST_TAG="${v1}.${v2}.${v3}"
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
+          git commit -a -m "chore: updates dist js"
           git tag "$LATEST_TAG" -m "Version $LATEST_TAG"
           git tag latest -m "The latest version"
 
       - name: 📌 Commit & Push
         uses: GuillaumeFalourd/git-commit-push@v1.3
         with:
-          commit_message: "chore: updates dist js"
           tags: true
           force: true
