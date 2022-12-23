@@ -52,3 +52,4 @@ jobs:
         with:
           commit_message: "chore: updates dist js"
           tags: true
+          force: true
