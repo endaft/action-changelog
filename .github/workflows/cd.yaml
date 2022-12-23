@@ -45,7 +45,8 @@ jobs:
           IFS=. read -r v1 v2 v3 <<< "${LATEST_TAG}"    # split into (integer) components
           ((v3++))                                      # do the math
           LATEST_TAG="${v1}.${v2}.${v3}"
-          echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
           git tag "$LATEST_TAG" -m "Version $LATEST_TAG"
           git tag latest -m "The latest version"
 
