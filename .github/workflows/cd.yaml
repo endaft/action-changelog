@@ -1,0 +1,54 @@
+name: Deployment
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "main"
+    paths:
+      - ".github/workflows/**"
+      - "jest.config.js"
+      - "package.json"
+      - "src/**"
+      - "tests/**"
+      - "tsconfig.json"
+      - "yarn.lock"
+
+permissions:
+  issues: write
+  contents: write
+  pull-requests: write
+  repository-projects: write
+
+jobs:
+  continuous-deployment:
+    name: Deployment
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 👇 Checkout
+        uses: actions/checkout@v3
+
+      - name: 🤹 Instal Deps
+        run: yarn install
+
+      - name: 🧪 Test
+        run: yarn test
+
+      - name: 🧱 Build
+        run: yarn build
+
+      - name: 🏷️ Tag
+        run: |
+          LATEST_TAG=$(gh api repos/endaft/$(basename $PWD)/releases/latest --jq=.tag_name)
+          IFS=. read -r v1 v2 v3 <<< "${LATEST_TAG}"    # split into (integer) components
+          ((v3++))                                      # do the math
+          LATEST_TAG="${v1}.${v2}.${v3}"
+          echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
+          git tag "$LATEST_TAG" -m "Version $LATEST_TAG"
+          git tag latest -m "The latest version"
+
+      - name: 📌 Commit & Push
+        uses: GuillaumeFalourd/git-commit-push@v1.3
+        with:
+          commit_message: "chore: updates dist js"
+          tags: true
