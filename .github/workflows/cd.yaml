@@ -43,24 +43,32 @@ jobs:
             echo "GIT_IS_DIRTY=false" >> $GITHUB_ENV
           fi
 
-      - name: 🏷️ Tag
+      - name: ✊ Bump Version
         if: env.GIT_IS_DIRTY == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          CURRENT_BRANCH=${GITHUB_REF}
+          case $CURRENT_BRANCH in "refs/heads/"*)
+              CURRENT_BRANCH=$(echo "$CURRENT_BRANCH" | sed "s@refs/heads/@@")
+          esac
+          echo "machine github.com" > "$HOME/.netrc"
+          echo "  login $GITHUB_ACTOR" >> "$HOME/.netrc"
+          echo "  password ${{ github.token }}" >> "$HOME/.netrc"
+
+          echo "machine api.github.com" >> "$HOME/.netrc"
+          echo "  login $GITHUB_ACTOR" >> "$HOME/.netrc"
+          echo "  password ${{ github.token }}" >> "$HOME/.netrc"
+
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+
           LATEST_TAG=$(gh api repos/endaft/$(basename $PWD)/releases/latest --jq=.tag_name)
           IFS=. read -r v1 v2 v3 <<< "${LATEST_TAG}"    # split into (integer) components
-          ((v3++))                                      # do the math
+          v3=$((v3 + 1))                                # do the math
           LATEST_TAG="${v1}.${v2}.${v3}"
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          git commit -a -m "chore: updates dist js"
-          git tag "$LATEST_TAG" -m "Version $LATEST_TAG"
-          git tag latest -m "The latest version"
 
-      - name: 📌 Commit & Push
-        if: env.GIT_IS_DIRTY == 'true'
-        uses: GuillaumeFalourd/git-commit-push@v1.3
-        with:
-          tags: true
-          force: true
+          git commit -a -m "chore: updates dist js"
+          git tag -f "$LATEST_TAG" -m "Version $LATEST_TAG"
+          git tag -f latest -m "The latest version"
+          git push origin "$CURRENT_BRANCH:$CURRENT_BRANCH" --follow-tags --force --tags
